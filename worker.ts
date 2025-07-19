@@ -15,15 +15,17 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
-    if (url.pathname === '/api/generate-avatar') {
-      return handleAvatarGeneration(request, env);
-    }
-    
-    if (url.pathname === '/api/suggest-styles') {
-      return handleStyleSuggestion(request, env);
+    if (url.pathname.startsWith('/api/')) {
+        if (url.pathname === '/api/generate-avatar') {
+            return handleAvatarGeneration(request, env);
+        }
+        if (url.pathname === '/api/suggest-styles') {
+            return handleStyleSuggestion(request, env);
+        }
+        return new Response("API route not found", { status: 404 });
     }
 
-    // For the frontend
+    // For all other requests, serve the static assets from the build output.
     return env.ASSETS.fetch(request);
   },
 };
