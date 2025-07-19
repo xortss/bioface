@@ -1,0 +1,6 @@
+{
+  "name": "Bioface1.0",
+  "description": "An application that takes a user's facial image, analyzes it, and then generates an idealized, professional avatar based on the user's features.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
