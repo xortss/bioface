@@ -91,7 +91,7 @@ async function getFastDescription(ai: GoogleGenAI, base64Data: string, mimeType:
     const textPart = { text: "VERY briefly describe the subject in this image using only a few comma-separated keywords. Focus on key features. Example: 'woman, long brown hair, brown eyes, smiling, glasses' or 'tabby cat, sitting on a couch'." };
     
     const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-1.5-pro',
         contents: { parts: [imagePart, textPart] },
         config: { thinkingConfig: { thinkingBudget: 0 } }
     });
@@ -107,7 +107,7 @@ async function validateDescriptionIsPerson(ai: GoogleGenAI, description: string)
   const prompt = `Does the following description refer to a person or human? Answer with only "yes" or "no". Description: "${description}"`;
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-1.5-pro,
     contents: prompt,
     config: { thinkingConfig: { thinkingBudget: 0 } }
   });
@@ -144,7 +144,7 @@ async function getCreativeStyles(ai: GoogleGenAI, base64Data: string, mimeType: 
     const textPart = { text: "Based on the person in this image, suggest 3-4 creative, one-or-two-word avatar styles or personas. Examples: 'Galactic Explorer', 'Steampunk Inventor', 'Forest Mage', 'Cyberpunk Hacker', 'Film Noir Detective', 'Pop Art Portrait'. Return ONLY a JSON array of strings." };
     
     const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-1.5-pro',
         contents: { parts: [imagePart, textPart] },
         config: {
           responseMimeType: "application/json",
