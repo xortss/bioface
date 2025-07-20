@@ -1,9 +1,6 @@
 # wrangler.toml
-name = "bioface-avatar-generator" # This MUST match your Cloudflare Pages Project Name exactly
-main = "functions/worker.ts"
-compatibility_date = "2024-05-14" # Use a recent date, or current date like "2025-07-19"
-# Optional: Add if you plan to use Pages Functions with Node.js APIs
-compatibility_flags = ["nodejs_compat"]
+name = "bioface-avatar-generator"
+compatibility_date = "2024-05-14"
+pages_build_output_dir = "dist"
 
 [vars]
-API_KEY = "YOUR_API_KEY_HERE" # Replace with your actual Google AI API key
