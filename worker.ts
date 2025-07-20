@@ -42,13 +42,36 @@ async function handleAvatarGeneration(request: Request, env: Env): Promise<Respo
       return new Response('Missing image or mimeType data in request body', { status: 400 });
     }
 
-    const description = await getFastDescription(ai, image, mimeType);
-    const isValid = await validateDescriptionIsPerson(ai, description);
+    let description;
+    try {
+        description = await getFastDescription(ai, image, mimeType);
+        console.log('Successfully generated description:', description);
+    } catch(e) {
+        console.error('Error in getFastDescription:', e);
+        throw new Error('Failed to generate description from image.');
+    }
+
+    let isValid;
+    try {
+        isValid = await validateDescriptionIsPerson(ai, description);
+        console.log('Successfully validated description. Is person?', isValid);
+    } catch(e) {
+        console.error('Error in validateDescriptionIsPerson:', e);
+        throw new Error('Failed to validate image description.');
+    }
+
     if (!isValid) {
       return new Response('No person detected in the image. Please upload a clear photo of a face.', { status: 400 });
     }
 
-    const avatar = await generateAvatarFromDescription(ai, description, style);
+    let avatar;
+    try {
+        avatar = await generateAvatarFromDescription(ai, description, style);
+        console.log('Successfully generated avatar.');
+    } catch(e) {
+        console.error('Error in generateAvatarFromDescription:', e);
+        throw new Error('Failed to generate the final avatar image.');
+    }
 
     return new Response(JSON.stringify({ avatar }), {
       headers: { 'Content-Type': 'application/json' },
@@ -107,7 +130,7 @@ async function validateDescriptionIsPerson(ai: GoogleGenAI, description: string)
   const prompt = `Does the following description refer to a person or human? Answer with only "yes" or "no". Description: "${description}"`;
 
   const response = await ai.models.generateContent({
-    model: 'gemini-1.5-pro,
+    model: 'gemini-1.5-pro',
     contents: prompt,
     config: { thinkingConfig: { thinkingBudget: 0 } }
   });
@@ -144,7 +167,7 @@ async function getCreativeStyles(ai: GoogleGenAI, base64Data: string, mimeType: 
     const textPart = { text: "Based on the person in this image, suggest 3-4 creative, one-or-two-word avatar styles or personas. Examples: 'Galactic Explorer', 'Steampunk Inventor', 'Forest Mage', 'Cyberpunk Hacker', 'Film Noir Detective', 'Pop Art Portrait'. Return ONLY a JSON array of strings." };
     
     const response = await ai.models.generateContent({
-        model: 'gemini-1.5-pro',
+        model: 'gemini-2.5-flash',
         contents: { parts: [imagePart, textPart] },
         config: {
           responseMimeType: "application/json",
